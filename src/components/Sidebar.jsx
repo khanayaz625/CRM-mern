@@ -43,7 +43,11 @@ const SidebarContent = ({ onClose, activeTab, setActiveTab, onLogout, user, isCo
                 <div className={`mb-6 flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 overflow-hidden transition-all duration-300 ${isCollapsed ? 'justify-center px-0 bg-transparent border-transparent' : ''}`}>
                     <div className={`rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold overflow-hidden border border-white/10 shrink-0 transition-all duration-300 ${isCollapsed ? 'w-10 h-10' : 'w-10 h-10'}`}>
                         {user?.avatar ? (
-                            <img src={`${import.meta.env.VITE_API_URL}${user.avatar}`} alt="" className="w-full h-full object-cover" />
+                            <img
+                                src={user.avatar.startsWith('http') ? user.avatar : `${import.meta.env.VITE_API_URL}${user.avatar}`}
+                                alt=""
+                                className="w-full h-full object-cover"
+                            />
                         ) : (
                             user?.name?.[0]?.toUpperCase() || 'U'
                         )}

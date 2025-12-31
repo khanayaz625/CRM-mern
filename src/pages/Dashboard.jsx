@@ -35,7 +35,11 @@ const Dashboard = () => {
     // Profile Update State
     const [profileData, setProfileData] = useState({ name: user?.name || '', email: user?.email || '', password: '' });
     const [profileImage, setProfileImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState(user?.avatar ? `${import.meta.env.VITE_API_URL}${user.avatar}` : null);
+    const [imagePreview, setImagePreview] = useState(
+        user?.avatar
+            ? (user.avatar.startsWith('http') ? user.avatar : `${import.meta.env.VITE_API_URL}${user.avatar}`)
+            : null
+    );
 
     // Edit States
     const [editingLead, setEditingLead] = useState(null);
@@ -69,7 +73,11 @@ const Dashboard = () => {
     useEffect(() => {
         if (user) {
             setProfileData({ name: user.name, email: user.email, password: '' });
-            setImagePreview(user.avatar ? `${import.meta.env.VITE_API_URL}${user.avatar}` : null);
+            setImagePreview(
+                user.avatar
+                    ? (user.avatar.startsWith('http') ? user.avatar : `${import.meta.env.VITE_API_URL}${user.avatar}`)
+                    : null
+            );
         }
     }, [user]);
 
@@ -107,17 +115,17 @@ const Dashboard = () => {
         if (profileImage) formData.append('avatar', profileImage);
 
         try {
-            // Need to change content-type header specifically for this request, 
-            // but api instance has JSON defaults. 
-            // Safer to use api.put but override headers.
-            // Let the browser handle boundary automatically for FormData
             const res = await api.put('/auth/profile', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             updateUser(res.data);
-            // Update image preview immediately
+            // Update image preview immediately - handle both Cloudinary and local URLs
             if (res.data.avatar) {
-                setImagePreview(`${import.meta.env.VITE_API_URL}${res.data.avatar}`);
+                setImagePreview(
+                    res.data.avatar.startsWith('http')
+                        ? res.data.avatar
+                        : `${import.meta.env.VITE_API_URL}${res.data.avatar}`
+                );
             }
             alert('Profile updated successfully!');
             setProfileData(prev => ({ ...prev, password: '' }));
@@ -442,7 +450,11 @@ const Dashboard = () => {
                                 <div className="absolute top-0 right-0 p-24 bg-primary/10 blur-[80px] rounded-full pointer-events-none"></div>
                                 <div className="w-16 h-16 rounded-full bg-surface border-2 border-primary/30 overflow-hidden flex-shrink-0">
                                     {user?.avatar ? (
-                                        <img src={`${import.meta.env.VITE_API_URL}${user.avatar}`} alt="Profile" className="w-full h-full object-cover" />
+                                        <img
+                                            src={user.avatar.startsWith('http') ? user.avatar : `${import.meta.env.VITE_API_URL}${user.avatar}`}
+                                            alt="Profile"
+                                            className="w-full h-full object-cover"
+                                        />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center bg-surface text-muted">
                                             <User size={32} />
@@ -831,7 +843,11 @@ const Dashboard = () => {
                                                 <td className="p-4 font-medium text-white flex items-center gap-3">
                                                     <div className="w-8 h-8 rounded-full bg-surface border border-white/10 overflow-hidden flex-shrink-0">
                                                         {u.avatar ? (
-                                                            <img src={`${import.meta.env.VITE_API_URL}${u.avatar}`} alt={u.name} className="w-full h-full object-cover" />
+                                                            <img
+                                                                src={u.avatar.startsWith('http') ? u.avatar : `${import.meta.env.VITE_API_URL}${u.avatar}`}
+                                                                alt={u.name}
+                                                                className="w-full h-full object-cover"
+                                                            />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center bg-white/5 text-xs font-bold text-muted">
                                                                 {u.name[0]}
