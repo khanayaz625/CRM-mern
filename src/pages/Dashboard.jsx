@@ -35,7 +35,7 @@ const Dashboard = () => {
     // Profile Update State
     const [profileData, setProfileData] = useState({ name: user?.name || '', email: user?.email || '', password: '' });
     const [profileImage, setProfileImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState(user?.avatar ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${user.avatar}` : null);
+    const [imagePreview, setImagePreview] = useState(user?.avatar ? `${import.meta.env.VITE_API_URL}${user.avatar}` : null);
 
     // Edit States
     const [editingLead, setEditingLead] = useState(null);
@@ -69,7 +69,7 @@ const Dashboard = () => {
     useEffect(() => {
         if (user) {
             setProfileData({ name: user.name, email: user.email, password: '' });
-            setImagePreview(user.avatar ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${user.avatar}` : null);
+            setImagePreview(user.avatar ? `${import.meta.env.VITE_API_URL}${user.avatar}` : null);
         }
     }, [user]);
 
@@ -115,8 +115,13 @@ const Dashboard = () => {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             updateUser(res.data);
+            // Update image preview immediately
+            if (res.data.avatar) {
+                setImagePreview(`${import.meta.env.VITE_API_URL}${res.data.avatar}`);
+            }
             alert('Profile updated successfully!');
             setProfileData(prev => ({ ...prev, password: '' }));
+            setProfileImage(null); // Clear the file input
         } catch (error) {
             console.error(error);
             alert('Failed to update profile.');
@@ -437,7 +442,7 @@ const Dashboard = () => {
                                 <div className="absolute top-0 right-0 p-24 bg-primary/10 blur-[80px] rounded-full pointer-events-none"></div>
                                 <div className="w-16 h-16 rounded-full bg-surface border-2 border-primary/30 overflow-hidden flex-shrink-0">
                                     {user?.avatar ? (
-                                        <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${user.avatar}`} alt="Profile" className="w-full h-full object-cover" />
+                                        <img src={`${import.meta.env.VITE_API_URL}${user.avatar}`} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center bg-surface text-muted">
                                             <User size={32} />
@@ -826,7 +831,7 @@ const Dashboard = () => {
                                                 <td className="p-4 font-medium text-white flex items-center gap-3">
                                                     <div className="w-8 h-8 rounded-full bg-surface border border-white/10 overflow-hidden flex-shrink-0">
                                                         {u.avatar ? (
-                                                            <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${u.avatar}`} alt={u.name} className="w-full h-full object-cover" />
+                                                            <img src={`${import.meta.env.VITE_API_URL}${u.avatar}`} alt={u.name} className="w-full h-full object-cover" />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center bg-white/5 text-xs font-bold text-muted">
                                                                 {u.name[0]}
