@@ -115,13 +115,13 @@ const LandingPage = () => {
                     <p className="text-muted mb-8 relative z-10">Fill out the form below to get the course syllabus and a free consultation.</p>
 
                     {status === 'success' ? (
-                        <div id="register" className="bg-green-500/20 text-green-400 p-6 rounded-xl border border-green-500/30 text-center">
+                        <div  className="bg-green-500/20 text-green-400 p-6 rounded-xl border border-green-500/30 text-center">
                             <CheckCircle className="w-12 h-12 mx-auto mb-4" />
                             <h4 className="text-xl font-bold mb-2">Thank You!</h4>
                             <p>We've received your details. One of our experts will contact you shortly.</p>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-6 relative z-10" >
+                        <form id="register" onSubmit={handleSubmit} className="space-y-6 relative z-10" >
                             <Input
                                 label="Full Name"
                                 type="text"
