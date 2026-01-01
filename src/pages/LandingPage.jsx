@@ -109,13 +109,13 @@ const LandingPage = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     className="glass-card p-8 md:p-12 relative overflow-hidden"
                 >
-                    <div id="register" className="absolute top-0 right-0 p-32 bg-accent/20 blur-[80px]" />
+                    <div className="absolute top-0 right-0 p-32 bg-accent/20 blur-[80px]" />
 
                     <h3 className="text-2xl font-bold mb-2 relative z-10">Secure Your Spot</h3>
                     <p className="text-muted mb-8 relative z-10">Fill out the form below to get the course syllabus and a free consultation.</p>
 
                     {status === 'success' ? (
-                        <div className="bg-green-500/20 text-green-400 p-6 rounded-xl border border-green-500/30 text-center">
+                        <div id="register" className="bg-green-500/20 text-green-400 p-6 rounded-xl border border-green-500/30 text-center">
                             <CheckCircle className="w-12 h-12 mx-auto mb-4" />
                             <h4 className="text-xl font-bold mb-2">Thank You!</h4>
                             <p>We've received your details. One of our experts will contact you shortly.</p>
