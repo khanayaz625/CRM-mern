@@ -109,7 +109,7 @@ const LandingPage = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     className="glass-card p-8 md:p-12 relative overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 p-32 bg-accent/20 blur-[80px]" />
+                    <div id="register" className="absolute top-0 right-0 p-32 bg-accent/20 blur-[80px]" />
 
                     <h3 className="text-2xl font-bold mb-2 relative z-10">Secure Your Spot</h3>
                     <p className="text-muted mb-8 relative z-10">Fill out the form below to get the course syllabus and a free consultation.</p>
@@ -121,7 +121,7 @@ const LandingPage = () => {
                             <p>We've received your details. One of our experts will contact you shortly.</p>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-6 relative z-10" id="register">
+                        <form onSubmit={handleSubmit} className="space-y-6 relative z-10" >
                             <Input
                                 label="Full Name"
                                 type="text"
