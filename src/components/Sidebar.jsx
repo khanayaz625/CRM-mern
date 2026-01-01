@@ -19,7 +19,7 @@ const SidebarContent = ({ onClose, activeTab, setActiveTab, onLogout, user, isCo
             <div className={`p-6 border-b border-white/10 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
                 {!isCollapsed && (
                     <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent whitespace-nowrap overflow-hidden">
-                        CRM Portal
+                        E-Course4u
                     </div>
                 )}
 
