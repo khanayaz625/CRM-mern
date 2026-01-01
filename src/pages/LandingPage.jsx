@@ -68,7 +68,7 @@ const LandingPage = () => {
             </section>
 
             {/* Content & Form Section */}
-            <section id="register" className="max-w-7xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-16 items-center">
+            <section className="max-w-7xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-16 items-center">
 
                 {/* Left Side: Benefits */}
                 <div className="space-y-8">
@@ -121,7 +121,7 @@ const LandingPage = () => {
                             <p>We've received your details. One of our experts will contact you shortly.</p>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                        <form onSubmit={handleSubmit} className="space-y-6 relative z-10" id="register">
                             <Input
                                 label="Full Name"
                                 type="text"
