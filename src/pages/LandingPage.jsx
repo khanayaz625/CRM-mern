@@ -64,6 +64,27 @@ const LandingPage = () => {
                     <a href="#register" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black font-bold rounded-full text-lg hover:bg-gray-200 transition-colors shadow-xl shadow-white/10">
                         Get Started Now <ArrowRight size={20} />
                     </a>
+
+                    {/* Image Showcase */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.8 }}
+                        className="mt-20 relative px-4"
+                    >
+                        <div className="relative group">
+                            {/* Decorative background glow */}
+                            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+
+                            <div className="relative glass p-2 rounded-2xl overflow-hidden shadow-2xl">
+                                <img
+                                    src="/crm_title.png"
+                                    alt="CRM Dashboard Mockup"
+                                    className="w-full h-auto rounded-xl shadow-inner border border-white/10"
+                                />
+                            </div>
+                        </div>
+                    </motion.div>
                 </motion.div>
             </section>
 
@@ -115,7 +136,7 @@ const LandingPage = () => {
                     <p className="text-muted mb-8 relative z-10">Fill out the form below to get the course syllabus and a free consultation.</p>
 
                     {status === 'success' ? (
-                        <div  className="bg-green-500/20 text-green-400 p-6 rounded-xl border border-green-500/30 text-center">
+                        <div className="bg-green-500/20 text-green-400 p-6 rounded-xl border border-green-500/30 text-center">
                             <CheckCircle className="w-12 h-12 mx-auto mb-4" />
                             <h4 className="text-xl font-bold mb-2">Thank You!</h4>
                             <p>We've received your details. One of our experts will contact you shortly.</p>
