@@ -10,13 +10,21 @@ const router = express.Router();
 // Register (For Admin/Setup purposes)
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, phone, password, role } = req.body;
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ message: 'User already exists' });
+        // Check for duplicates
+        if (email) {
+            const existingEmail = await User.findOne({ email });
+            if (existingEmail) return res.status(400).json({ message: 'User with this email already exists' });
+        }
+
+        if (phone) {
+            const existingPhone = await User.findOne({ phone });
+            if (existingPhone) return res.status(400).json({ message: 'User with this phone number already exists' });
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ name, email, password: hashedPassword, role });
+        const user = new User({ name, email, phone, password: hashedPassword, role });
 
         await user.save();
         res.status(201).json({ message: 'User created successfully' });
@@ -50,8 +58,10 @@ router.post('/login', async (req, res) => {
 // Update Profile (Authenticated User)
 router.put('/profile', verifyToken, upload.single('avatar'), async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, phone, password } = req.body;
         const updateData = { name, email };
+
+        if (phone) updateData.phone = phone;
 
         if (password) {
             updateData.password = await bcrypt.hash(password, 10);
@@ -71,7 +81,6 @@ router.put('/profile', verifyToken, upload.single('avatar'), async (req, res) =>
 });
 
 // Get All Users (Admin Only)
-
 router.get('/users', verifyAdmin, async (req, res) => {
     try {
         const users = await User.find().select('-password').sort({ createdAt: -1 });

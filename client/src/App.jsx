@@ -3,7 +3,14 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Layout from './layouts/Layout';
+import DashboardOverview from './pages/DashboardOverview';
+import LeadsManagement from './pages/LeadsManagement';
+import LeadsByCourse from './pages/LeadsByCourse';
+import LeadsByCollege from './pages/LeadsByCollege';
+import CourseAnalysis from './pages/CourseAnalysis';
+import TeamMembers from './pages/TeamMembers';
+import UserProfile from './pages/UserProfile';
 
 const PrivateRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -17,14 +24,17 @@ function App() {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<Login />} />
-                <Route
-                    path="/dashboard"
-                    element={
-                        <PrivateRoute>
-                            <Dashboard />
-                        </PrivateRoute>
-                    }
-                />
+
+                {/* Protected Routes Wrapper */}
+                <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
+                    <Route path="/dashboard" element={<DashboardOverview />} />
+                    <Route path="/manage-leads" element={<LeadsManagement />} />
+                    <Route path="/leads/by-course" element={<LeadsByCourse />} />
+                    <Route path="/leads/by-college" element={<LeadsByCollege />} />
+                    <Route path="/course-analysis" element={<CourseAnalysis />} />
+                    <Route path="/team-members" element={<TeamMembers />} />
+                    <Route path="/profile" element={<UserProfile />} />
+                </Route>
             </Routes>
         </AuthProvider>
     );

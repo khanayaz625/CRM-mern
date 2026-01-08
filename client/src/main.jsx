@@ -12,10 +12,19 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>,
 );
 
+// Self-destruct stubborn service workers and clear cache
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('SW Registered', reg))
-      .catch(err => console.log('SW Registration failed', err));
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
   });
 }
+
+// Clear all caches
+if ('caches' in window) {
+  caches.keys().then((names) => {
+    for (let name of names) caches.delete(name);
+  });
+}
+
