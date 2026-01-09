@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import ResponsiveTable from '../components/ResponsiveTable';
 import EditLeadModal from '../components/EditLeadModal';
 import { Search, Filter, UserCheck, X, RefreshCw } from 'lucide-react';
+import MultiSelect from '../components/MultiSelect';
 import Button from '../components/Button';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -17,7 +19,7 @@ const LeadsManagement = () => {
     // Filters
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState([]); // Empty means All
-    const [filterAssignedTo, setFilterAssignedTo] = useState('All');
+    const [filterAssignedTo, setFilterAssignedTo] = useState([]); // Empty means All, strings of IDs
     const [dateRange, setDateRange] = useState('All'); // All, Today, Week, Month
 
     const [users, setUsers] = useState([]);
@@ -30,6 +32,19 @@ const LeadsManagement = () => {
     // Editing
     const [editingLead, setEditingLead] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
+
+    const location = useLocation();
+    const [filterCourse, setFilterCourse] = useState('');
+    const [filterCollege, setFilterCollege] = useState('');
+
+    useEffect(() => {
+        if (location.state?.filterCourse) {
+            setFilterCourse(location.state.filterCourse);
+        }
+        if (location.state?.filterCollege) {
+            setFilterCollege(location.state.filterCollege);
+        }
+    }, [location.state]);
 
     useEffect(() => {
         fetchLeads();
@@ -105,7 +120,9 @@ const LeadsManagement = () => {
 
         const matchesStatus = filterStatus.length === 0 || filterStatus.includes(lead.status);
 
-        const matchesAssigned = filterAssignedTo === 'All' || (filterAssignedTo === 'Unassigned' && !lead.assignedTo) || (lead.assignedTo?._id === filterAssignedTo);
+        const matchesAssigned = filterAssignedTo.length === 0 ||
+            (filterAssignedTo.includes('Unassigned') && !lead.assignedTo) ||
+            (lead.assignedTo && filterAssignedTo.includes(lead.assignedTo._id));
 
         let matchesDate = true;
         const created = new Date(lead.createdAt);
@@ -126,14 +143,19 @@ const LeadsManagement = () => {
             matchesDate = created >= oneMonthAgo;
         }
 
-        return matchesSearch && matchesStatus && matchesAssigned && matchesDate;
+        const checkCourse = !filterCourse || (lead.courseName && lead.courseName.toLowerCase().includes(filterCourse.toLowerCase()));
+        const matchesCollege = !filterCollege || (lead.collegeName && lead.collegeName.toLowerCase().includes(filterCollege.toLowerCase()));
+
+        return matchesSearch && matchesStatus && matchesAssigned && matchesDate && checkCourse && matchesCollege;
     });
 
     const clearFilters = () => {
         setSearchQuery('');
         setFilterStatus([]);
-        setFilterAssignedTo('All');
+        setFilterAssignedTo([]);
         setDateRange('All');
+        setFilterCourse('');
+        setFilterCollege('');
     };
 
     const getStatusColor = (status) => {
@@ -183,7 +205,7 @@ const LeadsManagement = () => {
             </div>
 
             {/* Filters Section */}
-            <div className="glass-card p-4 rounded-xl border border-white/10 space-y-4">
+            <div className="glass-card p-4 rounded-xl border border-white/10 space-y-4 relative z-10">
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -210,17 +232,17 @@ const LeadsManagement = () => {
 
                         {/* Assigned To Filter (Admin Only) */}
                         {user?.role === 'admin' && (
-                            <select
-                                value={filterAssignedTo}
-                                onChange={(e) => setFilterAssignedTo(e.target.value)}
-                                className="px-4 py-3 bg-surface border border-white/10 rounded-xl text-sm focus:outline-none focus:border-primary/50 text-white max-w-[150px]"
-                            >
-                                <option value="All">All Staff</option>
-                                <option value="Unassigned">Unassigned</option>
-                                {users.map(u => (
-                                    <option key={u._id} value={u._id}>{u.name}</option>
-                                ))}
-                            </select>
+                            <div className="w-[200px]">
+                                <MultiSelect
+                                    options={[
+                                        { value: 'Unassigned', label: 'Unassigned' },
+                                        ...users.map(u => ({ value: u._id, label: u.name }))
+                                    ]}
+                                    selected={filterAssignedTo}
+                                    onChange={setFilterAssignedTo}
+                                    placeholder="Select Staff"
+                                />
+                            </div>
                         )}
 
                         <button onClick={clearFilters} className="px-4 py-3 bg-surface hover:bg-white/5 border border-white/10 rounded-xl text-white transition" title="Clear Filters">
@@ -237,8 +259,8 @@ const LeadsManagement = () => {
                             key={status}
                             onClick={() => toggleStatus(status)}
                             className={`px-3 py-1 rounded-full text-xs font-bold border transition ${filterStatus.includes(status)
-                                    ? getStatusColor(status).replace('text-', 'bg-').replace('bg-', 'border-').split(" ")[0] + " text-white border-transparent" // Hacky color mapping or just use simple active state
-                                    : 'bg-transparent text-gray-400 border-white/10 hover:border-white/30'
+                                ? getStatusColor(status).replace('text-', 'bg-').replace('bg-', 'border-').split(" ")[0] + " text-white border-transparent" // Hacky color mapping or just use simple active state
+                                : 'bg-transparent text-gray-400 border-white/10 hover:border-white/30'
                                 }`}
                             style={filterStatus.includes(status) ? { backgroundColor: 'var(--primary)', borderColor: 'var(--primary)' } : {}}
                         >
@@ -248,7 +270,29 @@ const LeadsManagement = () => {
                     {filterStatus.length > 0 && (
                         <button onClick={() => setFilterStatus([])} className="text-xs text-red-400 hover:text-red-300 ml-2 underline">Clear Status</button>
                     )}
+                    {filterStatus.length > 0 && (
+                        <button onClick={() => setFilterStatus([])} className="text-xs text-red-400 hover:text-red-300 ml-2 underline">Clear Status</button>
+                    )}
                 </div>
+
+                {/* Active Filters Display */}
+                {(filterCourse || filterCollege) && (
+                    <div className="flex gap-2 items-center text-sm text-gray-300 mt-2">
+                        <span className="text-muted">Active Filters:</span>
+                        {filterCourse && (
+                            <span className="px-2 py-1 bg-primary/20 text-primary border border-primary/30 rounded-lg flex items-center gap-1">
+                                Course: {filterCourse}
+                                <button onClick={() => setFilterCourse('')}><X size={12} /></button>
+                            </span>
+                        )}
+                        {filterCollege && (
+                            <span className="px-2 py-1 bg-accent/20 text-accent border-accent/30 rounded-lg flex items-center gap-1">
+                                College: {filterCollege}
+                                <button onClick={() => setFilterCollege('')}><X size={12} /></button>
+                            </span>
+                        )}
+                    </div>
+                )}
             </div>
 
             <ResponsiveTable
@@ -262,7 +306,7 @@ const LeadsManagement = () => {
                 selectedLeads={selectedLeads}
                 onSelectLead={(id) => setSelectedLeads(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])}
                 onSelectAll={() => setSelectedLeads(selectedLeads.length === filteredLeads.length ? [] : filteredLeads.map(l => l._id))}
-                onPrint={() => window.print()}
+                onPrint={undefined}
                 onExportPDF={exportToPDF}
                 onExportXLSX={exportToXLSX}
                 onAssignLead={(lead) => { setSelectedLeads([lead._id]); setAssignToUser(lead.assignedTo?._id || ''); setShowAssignModal(true); }}

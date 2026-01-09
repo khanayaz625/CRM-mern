@@ -10,6 +10,14 @@ const TeamMembers = () => {
     const [usersList, setUsersList] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const toTitleCase = (str) => {
+        if (!str) return '';
+        return str.replace(
+            /\w\S*/g,
+            text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+        );
+    };
+
     // Modals
     const [showAddModal, setShowAddModal] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -173,27 +181,37 @@ const TeamMembers = () => {
             {/* Add User Modal */}
             {showAddModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                    <div className="bg-surface border border-white/10 p-6 md:p-8 rounded-2xl w-full max-w-md relative animate-in fade-in zoom-in duration-200">
-                        <button onClick={() => setShowAddModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white"><X size={24} /></button>
-                        <h2 className="text-2xl font-bold mb-6">Add Employee</h2>
-                        <form onSubmit={handleCreateUser} className="space-y-4">
-                            <Input label="Name" required value={newUser.name} onChange={e => setNewUser({ ...newUser, name: e.target.value })} />
-                            <Input label="Email" type="email" required value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} />
-                            <Input label="Phone" value={newUser.phone} onChange={e => setNewUser({ ...newUser, phone: e.target.value })} />
-                            <Input label="Password" type="password" required value={newUser.password} onChange={e => setNewUser({ ...newUser, password: e.target.value })} />
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-300">Role</label>
-                                <select
-                                    className="w-full p-3 bg-surface/50 border border-white/10 rounded-xl focus:outline-none focus:border-primary/50 text-white"
-                                    value={newUser.role}
-                                    onChange={e => setNewUser({ ...newUser, role: e.target.value })}
-                                >
-                                    <option value="employee" className="bg-surface">Employee</option>
-                                    <option value="admin" className="bg-surface">Admin</option>
-                                </select>
-                            </div>
-                            <Button type="submit">Create User</Button>
-                        </form>
+                    <div className="bg-surface border border-white/10 rounded-2xl w-full max-w-md flex flex-col max-h-[90vh] relative animate-in fade-in zoom-in duration-200 overflow-hidden shadow-2xl">
+                        <div className="bg-gradient-to-r from-primary/20 to-purple-600/20 p-6 border-b border-white/10 flex justify-between items-center">
+                            <h2 className="text-2xl font-bold text-white">Add Employee</h2>
+                            <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"><X size={20} /></button>
+                        </div>
+                        <div className="p-6 md:p-8 overflow-y-auto">
+                            <form onSubmit={handleCreateUser} className="space-y-4">
+                                <Input
+                                    label="Name"
+                                    required
+                                    value={newUser.name}
+                                    onChange={e => setNewUser({ ...newUser, name: e.target.value })}
+                                    onBlur={() => setNewUser({ ...newUser, name: toTitleCase(newUser.name.trim()) })}
+                                />
+                                <Input label="Email" type="email" required value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value.toLowerCase() })} />
+
+                                <Input label="Password" type="password" required value={newUser.password} onChange={e => setNewUser({ ...newUser, password: e.target.value })} />
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-gray-300">Role</label>
+                                    <select
+                                        className="w-full p-3 bg-surface/50 border border-white/10 rounded-xl focus:outline-none focus:border-primary/50 text-white"
+                                        value={newUser.role}
+                                        onChange={e => setNewUser({ ...newUser, role: e.target.value })}
+                                    >
+                                        <option value="employee" className="bg-surface">Employee</option>
+                                        <option value="admin" className="bg-surface">Admin</option>
+                                    </select>
+                                </div>
+                                <Button type="submit">Create User</Button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}
@@ -201,13 +219,17 @@ const TeamMembers = () => {
             {/* Password Reset Modal */}
             {showPasswordModal && editingUser && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                    <div className="bg-surface border border-white/10 p-6 md:p-8 rounded-2xl w-full max-w-md relative animate-in fade-in zoom-in duration-200">
-                        <button onClick={() => setShowPasswordModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white"><X size={24} /></button>
-                        <h2 className="text-lg font-bold mb-6">Reset Password for {editingUser.name}</h2>
-                        <form onSubmit={handleUpdateUserPassword} className="space-y-4">
-                            <Input label="New Password" type="password" required value={newPassword} onChange={e => setNewPassword(e.target.value)} />
-                            <Button type="submit">Update Password</Button>
-                        </form>
+                    <div className="bg-surface border border-white/10 rounded-2xl w-full max-w-md flex flex-col max-h-[90vh] relative animate-in fade-in zoom-in duration-200 overflow-hidden shadow-2xl">
+                        <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 p-6 border-b border-white/10 flex justify-between items-center">
+                            <h2 className="text-lg font-bold text-white">Reset Password for {editingUser.name}</h2>
+                            <button onClick={() => setShowPasswordModal(false)} className="text-gray-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"><X size={20} /></button>
+                        </div>
+                        <div className="p-6 md:p-8 overflow-y-auto">
+                            <form onSubmit={handleUpdateUserPassword} className="space-y-4">
+                                <Input label="New Password" type="password" required value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+                                <Button type="submit">Update Password</Button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}
@@ -215,23 +237,27 @@ const TeamMembers = () => {
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && userToDelete && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                    <div className="bg-surface border border-red-500/30 p-6 md:p-8 rounded-2xl w-full max-w-md relative animate-in fade-in zoom-in duration-200">
-                        <button onClick={() => { setShowDeleteConfirm(false); setAdminPassword(''); }} className="absolute top-4 right-4 text-gray-400 hover:text-white"><X size={24} /></button>
-                        <div className="flex items-center gap-3 mb-4 text-red-400">
-                            <ShieldAlert size={32} />
-                            <h2 className="text-xl font-bold">Admin Authorization</h2>
-                        </div>
-                        <p className="text-gray-300 mb-6">
-                            You are about to delete <strong>{userToDelete.name}</strong>. This action cannot be undone.
-                            Please enter your admin password to confirm.
-                        </p>
-                        <form onSubmit={confirmDelete} className="space-y-4">
-                            <Input label="Admin Password" type="password" required value={adminPassword} onChange={e => setAdminPassword(e.target.value)} placeholder="Enter your password" />
-                            <div className="flex gap-3">
-                                <Button type="button" onClick={() => { setShowDeleteConfirm(false); setAdminPassword(''); }} className="bg-white/5 border-white/10">Cancel</Button>
-                                <Button type="submit" className="bg-red-500 hover:bg-red-600 border-red-500">Confirm Deletion</Button>
+                    <div className="bg-surface border border-white/10 rounded-2xl w-full max-w-md flex flex-col max-h-[90vh] relative animate-in fade-in zoom-in duration-200 overflow-hidden shadow-2xl">
+                        <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 p-6 border-b border-white/10 flex justify-between items-center">
+                            <div className="flex items-center gap-3 text-red-400">
+                                <ShieldAlert size={24} />
+                                <h2 className="text-xl font-bold text-white">Admin Authorization</h2>
                             </div>
-                        </form>
+                            <button onClick={() => { setShowDeleteConfirm(false); setAdminPassword(''); }} className="text-gray-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"><X size={20} /></button>
+                        </div>
+                        <div className="p-6 md:p-8 overflow-y-auto">
+                            <p className="text-gray-300 mb-6">
+                                You are about to delete <strong>{userToDelete.name}</strong>. This action cannot be undone.
+                                Please enter your admin password to confirm.
+                            </p>
+                            <form onSubmit={confirmDelete} className="space-y-4">
+                                <Input label="Admin Password" type="password" required value={adminPassword} onChange={e => setAdminPassword(e.target.value)} placeholder="Enter your password" />
+                                <div className="flex gap-3">
+                                    <Button type="button" onClick={() => { setShowDeleteConfirm(false); setAdminPassword(''); }} className="bg-white/5 border-white/10">Cancel</Button>
+                                    <Button type="submit" className="bg-red-500 hover:bg-red-600 border-red-500">Confirm Deletion</Button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}

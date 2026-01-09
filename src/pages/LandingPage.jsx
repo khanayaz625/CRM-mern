@@ -2,25 +2,71 @@ import React, { useState } from 'react';
 import api from '../api';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
-import { Sparkles, CheckCircle, ArrowRight, Star } from 'lucide-react';
+import { Sparkles, CheckCircle, ArrowRight, Star, User, Mail, Phone, BookOpen, School } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
+const toTitleCase = (str) => {
+    if (!str) return '';
+    return str.replace(
+        /\w\S*/g,
+        text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+    );
+};
+
 const LandingPage = () => {
     const [formData, setFormData] = useState({ name: '', email: '', phone: '', courseName: '', collegeName: '' });
+    const [errors, setErrors] = useState({});
     const [status, setStatus] = useState('');
     const navigate = useNavigate();
 
+    const handleChange = (field, value) => {
+        let finalValue = value;
+        if (field === 'email') finalValue = value.toLowerCase();
+        if (field === 'phone') {
+            const cleaned = value.replace(/\D/g, '');
+            if (cleaned.length > 10) return;
+            finalValue = cleaned;
+        }
+        setFormData(prev => ({ ...prev, [field]: finalValue }));
+        if (errors[field]) setErrors(prev => ({ ...prev, [field]: null }));
+    };
+
+    const validate = () => {
+        const errs = {};
+        if (!formData.name.trim()) errs.name = "Name is required";
+        if (!formData.email.trim()) errs.email = "Email is required";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errs.email = "Invalid email format";
+
+        if (!formData.phone) errs.phone = "Phone is required";
+        else if (formData.phone.length !== 10) errs.phone = "Must be 10 digits";
+
+        if (!formData.courseName.trim()) errs.courseName = "Course name is required";
+        if (!formData.collegeName.trim()) errs.collegeName = "College name is required";
+
+        setErrors(errs);
+        return Object.keys(errs).length === 0;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return;
         setStatus('submitting');
         try {
             await api.post('/leads', formData);
             setStatus('success');
             setFormData({ name: '', email: '', phone: '', courseName: '', collegeName: '' });
+            setErrors({});
         } catch (error) {
             console.error(error);
+            if (error.response?.data?.message?.toLowerCase().includes('duplicate')) {
+                if (error.response.data.message.toLowerCase().includes('email')) {
+                    setErrors(prev => ({ ...prev, email: 'This email is already registered' }));
+                } else if (error.response.data.message.toLowerCase().includes('phone')) {
+                    setErrors(prev => ({ ...prev, phone: 'This phone is already registered' }));
+                }
+            }
             setStatus('error');
         }
     };
@@ -145,39 +191,69 @@ const LandingPage = () => {
                         <form id="register" onSubmit={handleSubmit} className="space-y-6 relative z-10" >
                             <Input
                                 label="Full Name"
-                                type="text"
                                 required
+                                icon={User}
                                 placeholder="John Doe"
                                 value={formData.name}
-                                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                onChange={e => handleChange('name', e.target.value)}
+                                onBlur={() => {
+                                    const val = formData.name.trim();
+                                    setFormData(prev => ({ ...prev, name: toTitleCase(val) }));
+                                }}
+                                error={errors.name}
                             />
                             <Input
                                 label="Email Address"
                                 type="email"
                                 required
+                                icon={Mail}
                                 placeholder="john@example.com"
                                 value={formData.email}
-                                onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                onChange={e => handleChange('email', e.target.value)}
+                                style={{ textTransform: 'lowercase' }}
+                                error={errors.email}
                             />
                             <Input
                                 label="Phone Number"
                                 type="tel"
-                                placeholder="+1 (555) 000-0000"
+                                required
+                                icon={Phone}
+                                prefix="+91"
+                                placeholder="9876543210"
                                 value={formData.phone}
-                                onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                                onChange={e => handleChange('phone', e.target.value)}
+                                error={errors.phone}
                             />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Input
                                     label="Course Name"
+                                    required
+                                    icon={BookOpen}
                                     placeholder="B.Tech, MBA etc."
                                     value={formData.courseName}
-                                    onChange={e => setFormData({ ...formData, courseName: e.target.value })}
+                                    onChange={e => handleChange('courseName', e.target.value)}
+                                    onBlur={() => {
+                                        const val = formData.courseName.trim();
+                                        if (['IT', 'CS', 'GPT', 'CSE'].includes(val.toUpperCase())) {
+                                            setFormData(prev => ({ ...prev, courseName: val.toUpperCase() }));
+                                        } else {
+                                            setFormData(prev => ({ ...prev, courseName: toTitleCase(val) }));
+                                        }
+                                    }}
+                                    error={errors.courseName}
                                 />
                                 <Input
                                     label="College Name"
+                                    required
+                                    icon={School}
                                     placeholder="Your University"
                                     value={formData.collegeName}
-                                    onChange={e => setFormData({ ...formData, collegeName: e.target.value })}
+                                    onChange={e => handleChange('collegeName', e.target.value)}
+                                    onBlur={() => {
+                                        const val = formData.collegeName.trim();
+                                        setFormData(prev => ({ ...prev, collegeName: toTitleCase(val) }));
+                                    }}
+                                    error={errors.collegeName}
                                 />
                             </div>
 

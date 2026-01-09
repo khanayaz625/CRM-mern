@@ -114,13 +114,7 @@ const ResponsiveTable = ({
 
                     <div className="flex items-center gap-2">
                         {/* Action Bar inside Table Header */}
-                        <button
-                            onClick={onPrint}
-                            className="p-2.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-xl transition border border-white/5 group relative"
-                            title="Print Leads"
-                        >
-                            <Printer size={18} />
-                        </button>
+
 
                         <div className="relative group/export">
                             <button className="p-2.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-xl transition border border-white/5">
