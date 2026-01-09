@@ -54,8 +54,15 @@ const SidebarContent = ({ onClose, onLogout, user, isCollapsed, setSidebarCollap
                         )}
                     </div>
                     {!isCollapsed && (
-                        <div className="overflow-hidden">
-                            <p className="font-bold truncate text-sm text-white">{user?.name}</p>
+                        <div className="overflow-hidden flex-1">
+                            <div className="flex items-center gap-2">
+                                <p className="font-bold truncate text-sm text-white">{user?.name}</p>
+                                {user?.isDemo && (
+                                    <span className="px-1.5 py-0.5 bg-accent/20 text-accent text-[8px] font-bold rounded uppercase tracking-wider border border-accent/30">
+                                        Demo
+                                    </span>
+                                )}
+                            </div>
                             <p className="text-[10px] text-muted truncate uppercase tracking-wider font-semibold">{user?.role}</p>
                         </div>
                     )}
