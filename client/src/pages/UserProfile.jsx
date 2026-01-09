@@ -23,6 +23,20 @@ const UserProfile = () => {
         }
     }, [user]);
 
+    const toTitleCase = (str) => {
+        if (!str) return '';
+        return str.replace(
+            /\w\S*/g,
+            text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+        );
+    };
+
+    const handleBlur = () => {
+        if (profileData.name) {
+            setProfileData(prev => ({ ...prev, name: toTitleCase(prev.name.trim()) }));
+        }
+    };
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -97,6 +111,7 @@ const UserProfile = () => {
                             label="Full Name"
                             value={profileData.name}
                             onChange={e => setProfileData({ ...profileData, name: e.target.value })}
+                            onBlur={handleBlur}
                         />
                         <Input
                             label="Email Address"

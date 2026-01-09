@@ -43,7 +43,7 @@ const SidebarContent = ({ onClose, onLogout, user, isCollapsed, setSidebarCollap
                 </div>
             </div>
 
-            <div className={`p-4 ${isCollapsed ? 'px-2' : ''}`}>
+            <div className={`p-4 flex-1 overflow-y-auto ${isCollapsed ? 'px-2' : ''}`}>
                 {/* User Info Block */}
                 <div className={`mb-6 flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 overflow-hidden transition-all duration-300 ${isCollapsed ? 'justify-center px-0 bg-transparent border-transparent' : ''}`}>
                     <div className={`rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold overflow-hidden border border-white/10 shrink-0 transition-all duration-300 ${isCollapsed ? 'w-10 h-10' : 'w-10 h-10'}`}>

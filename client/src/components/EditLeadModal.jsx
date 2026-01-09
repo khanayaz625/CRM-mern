@@ -32,8 +32,7 @@ const EditLeadModal = ({ lead, onClose, onSuccess }) => {
 
         if (!editingLead.phone) errs.phone = "Phone is required";
         else if (!/^\d+$/.test(editingLead.phone)) errs.phone = "Phone must be numeric";
-        // min/max check?
-        else if (editingLead.phone.length < 10 || editingLead.phone.length > 15) errs.phone = "Phone must be 10-15 digits";
+        else if (editingLead.phone.length !== 10) errs.phone = "Phone must be 10 digits";
 
         setErrors(errs);
         return Object.keys(errs).length === 0;
@@ -47,7 +46,7 @@ const EditLeadModal = ({ lead, onClose, onSuccess }) => {
         if (field === 'email') finalValue = value.toLowerCase();
         if (field === 'phone') {
             if (/[^0-9]/.test(value)) return;
-            if (value.length > 15) return;
+            if (value.length > 10) return;
         }
 
         setEditingLead(prev => ({ ...prev, [field]: finalValue }));
@@ -89,31 +88,35 @@ const EditLeadModal = ({ lead, onClose, onSuccess }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-surface border border-white/10 p-6 md:p-8 rounded-2xl w-full max-w-md relative animate-in fade-in zoom-in duration-200">
-                <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white"><X size={24} /></button>
-                <h2 className="text-2xl font-bold mb-6">Edit Lead</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <Input label="Name" required value={editingLead.name} onChange={e => handleChange('name', e.target.value)} onBlur={() => handleBlur('name')} error={errors.name} />
-                    <Input label="Email" type="email" required value={editingLead.email} onChange={e => handleChange('email', e.target.value)} error={errors.email} />
-                    <Input label="Phone" required value={editingLead.phone} onChange={e => handleChange('phone', e.target.value)} error={errors.phone} />
-                    <div className="grid grid-cols-2 gap-4">
-                        <Input label="Course" value={editingLead.courseName || ''} onChange={e => handleChange('courseName', e.target.value)} onBlur={() => handleBlur('courseName')} />
-                        <Input label="College" value={editingLead.collegeName || ''} onChange={e => handleChange('collegeName', e.target.value)} onBlur={() => handleBlur('collegeName')} />
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-300">Remarks</label>
-                        <textarea
-                            className="w-full p-3 bg-surface/50 border border-white/10 rounded-xl focus:outline-none focus:border-primary/50 text-white min-h-[100px]"
-                            value={editingLead.notes || ''}
-                            onChange={e => handleChange('notes', e.target.value)}
-                            placeholder="Add notes..."
-                        />
-                    </div>
-                    <div className="flex gap-3 pt-2">
-                        <Button type="button" onClick={onClose} className="flex-1 bg-white/5 hover:bg-white/10 border-white/5 !text-gray-300">Cancel</Button>
-                        <Button type="submit" disabled={loading} className="flex-1 bg-primary hover:bg-blue-600">{loading ? 'Updating...' : 'Update Lead'}</Button>
-                    </div>
-                </form>
+            <div className="bg-surface border border-white/10 rounded-2xl w-full max-w-md flex flex-col max-h-[90vh] relative animate-in fade-in zoom-in duration-200 overflow-hidden shadow-2xl">
+                <div className="bg-gradient-to-r from-primary/20 to-purple-600/20 p-6 border-b border-white/10 flex justify-between items-center">
+                    <h2 className="text-2xl font-bold text-white">Edit Lead</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"><X size={20} /></button>
+                </div>
+                <div className="p-6 md:p-8 overflow-y-auto">
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <Input label="Name" required value={editingLead.name} onChange={e => handleChange('name', e.target.value)} onBlur={() => handleBlur('name')} error={errors.name} />
+                        <Input label="Email" type="email" required value={editingLead.email} onChange={e => handleChange('email', e.target.value.toLowerCase())} error={errors.email} />
+                        <Input label="Phone" required value={editingLead.phone} onChange={e => handleChange('phone', e.target.value)} error={errors.phone} prefix="+91" placeholder="9876543210" />
+                        <div className="space-y-4">
+                            <Input label="Course" value={editingLead.courseName || ''} onChange={e => handleChange('courseName', e.target.value)} onBlur={() => handleBlur('courseName')} />
+                            <Input label="College" value={editingLead.collegeName || ''} onChange={e => handleChange('collegeName', e.target.value)} onBlur={() => handleBlur('collegeName')} />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-gray-300">Remarks</label>
+                            <textarea
+                                className="w-full p-3 bg-surface/50 border border-white/10 rounded-xl focus:outline-none focus:border-primary/50 text-white min-h-[100px]"
+                                value={editingLead.notes || ''}
+                                onChange={e => handleChange('notes', e.target.value)}
+                                placeholder="Add notes..."
+                            />
+                        </div>
+                        <div className="flex gap-3 pt-2">
+                            <Button type="button" onClick={onClose} className="flex-1 bg-white/5 hover:bg-white/10 border-white/5 !text-gray-300">Cancel</Button>
+                            <Button type="submit" disabled={loading} className="flex-1 bg-primary hover:bg-blue-600">{loading ? 'Updating...' : 'Update Lead'}</Button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );

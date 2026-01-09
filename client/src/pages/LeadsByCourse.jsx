@@ -90,8 +90,8 @@ const LeadsByCourse = () => {
                             key={status}
                             onClick={() => toggleStatus(status)}
                             className={`px-3 py-1 rounded-full text-xs font-bold border transition ${filterStatus.includes(status)
-                                    ? 'bg-primary text-white border-primary'
-                                    : 'bg-transparent text-gray-400 border-white/10 hover:border-white/30'
+                                ? 'bg-primary text-white border-primary'
+                                : 'bg-transparent text-gray-400 border-white/10 hover:border-white/30'
                                 }`}
                         >
                             {status}
@@ -118,22 +118,22 @@ const LeadsByCourse = () => {
                                 <div key={l._id} className="text-xs text-muted flex justify-between border-b border-white/5 pb-2">
                                     <span className="font-medium text-gray-300 truncate pr-2">{l.name}</span>
                                     <span className={`text-[10px] uppercase font-bold shrink-0 ${l.status === 'Won' ? 'text-green-400' :
-                                            l.status === 'Lost' ? 'text-red-400' : 'text-gray-500'
+                                        l.status === 'Lost' ? 'text-red-400' : 'text-gray-500'
                                         }`}>{l.status}</span>
                                 </div>
                             ))}
                         </div>
 
-                        {groupLeads.length > 5 && (
+                        <div className="mt-4">
                             <button
-                                onClick={() => navigate('/manage-leads')}
-                                className="w-full mt-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-primary text-sm font-bold transition flex items-center justify-center gap-2"
+                                onClick={() => navigate('/manage-leads', { state: { filterCourse: course } })}
+                                className="w-full py-2 bg-white/5 hover:bg-white/10 rounded-lg text-primary text-sm font-bold transition flex items-center justify-center gap-2"
                             >
-                                View all {groupLeads.length} leads
+                                View {groupLeads.length} leads
                             </button>
-                        )}
+                        </div>
                         {groupLeads.length <= 5 && (
-                            <div className="mt-4 pt-2 text-center text-xs text-muted italic">End of list</div>
+                            <div className="mt-2 text-center text-[10px] text-muted italic">End of list</div>
                         )}
                     </div>
                 ))}
