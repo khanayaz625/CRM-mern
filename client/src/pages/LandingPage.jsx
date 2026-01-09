@@ -78,9 +78,16 @@ const LandingPage = () => {
                 <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
                     E-Course4u
                 </div>
-                <button onClick={() => navigate('/login')} className="px-5 py-2 glass rounded-full hover:bg-white/10 transition text-sm">
-                    Login
-                </button>
+                <div className="flex gap-4 items-center">
+                    <div className="hidden md:flex gap-4">
+                        <button onClick={() => navigate('/login')} className="px-5 py-2 glass rounded-full hover:bg-white/10 transition text-sm">
+                            Login
+                        </button>
+                        <a href="#demo" className="px-5 py-2 bg-accent/20 text-accent rounded-full border border-accent/30 hover:bg-accent/30 transition text-sm font-medium">
+                            Try Demo
+                        </a>
+                    </div>
+                </div>
             </nav>
 
             {/* Hero Section */}
@@ -265,6 +272,47 @@ const LandingPage = () => {
                     )}
                 </motion.div>
 
+            </section>
+
+            {/* Demo Section */}
+            <section id="demo" className="py-20 bg-black/30 backdrop-blur-sm border-y border-white/5">
+                <div className="max-w-4xl mx-auto px-4 text-center">
+                    <h2 className="text-3xl font-bold mb-8">Client Demo Access</h2>
+                    <p className="text-muted mb-12">Use the credentials below to explore the portal features without affecting real data.</p>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div className="glass p-8 rounded-2xl border-t-4 border-primary text-left">
+                            <h4 className="text-xl font-bold mb-4 text-primary flex items-center gap-2">
+                                <User size={20} /> Admin Panel
+                            </h4>
+                            <div className="space-y-2">
+                                <p className="text-sm opacity-60">Email</p>
+                                <p className="font-mono bg-white/5 p-2 rounded">demoadmin@example.com</p>
+                                <p className="text-sm opacity-60 mt-4">Password</p>
+                                <p className="font-mono bg-white/5 p-2 rounded">demo123</p>
+                            </div>
+                        </div>
+
+                        <div className="glass p-8 rounded-2xl border-t-4 border-accent text-left">
+                            <h4 className="text-xl font-bold mb-4 text-accent flex items-center gap-2">
+                                <User size={20} /> Employee Panel
+                            </h4>
+                            <div className="space-y-2">
+                                <p className="text-sm opacity-60">Email</p>
+                                <p className="font-mono bg-white/5 p-2 rounded">demoemployee@example.com</p>
+                                <p className="text-sm opacity-60 mt-4">Password</p>
+                                <p className="font-mono bg-white/5 p-2 rounded">demo123</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={() => navigate('/login')}
+                        className="mt-12 px-10 py-4 bg-primary text-white font-bold rounded-full hover:scale-105 transition-transform shadow-lg shadow-primary/20"
+                    >
+                        Go to Login Page
+                    </button>
+                </div>
             </section>
 
             {/* Footer */}

@@ -7,24 +7,21 @@ import User from "../models/User.js";
 // Routes
 import authRoutes from "../routes/auth.js";
 import leadRoutes from "../routes/leads.js";
+import futureItemRoutes from "../routes/futureItems.js";
 
 const app = express();
 
 /* ---------- Middleware ---------- */
-app.use(express.json());
-app.use("/uploads", express.static("uploads"));
-
 app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        "https://my-crm-ten-tan.vercel.app",
-        "https://my-b33cf45nv-ayaz-khans-projects-ebbf8d73.vercel.app",
-        "https://my-awei378g0-ayaz-khans-projects-ebbf8d73.vercel.app",
-        "https://my-6g1kd70v-ayaz-khans-projects-ebbf8d73.vercel.app",
-        "https://crm-backend-m1f3.onrender.com"
-    ],
+    origin: true,
     credentials: true
 }));
+
+// Handle preflight requests globally
+app.options('*', cors());
+
+app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 /* ---------- Root Test Route ---------- */
 app.get("/", (req, res) => {
@@ -59,6 +56,7 @@ app.get("/setup-admin", async (req, res) => {
 /* ---------- API Routes ---------- */
 app.use("/api/auth", authRoutes);
 app.use("/api/leads", leadRoutes);
+app.use("/api/future", futureItemRoutes);
 
 /* ---------- MongoDB Connection ---------- */
 mongoose.connect(process.env.MONGODB_URI)

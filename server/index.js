@@ -63,8 +63,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// Middleware (Resilient Simplified CORS)
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
+
+// Global preflight handler
+app.options('*', cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 

@@ -270,9 +270,7 @@ const LeadsManagement = () => {
                     {filterStatus.length > 0 && (
                         <button onClick={() => setFilterStatus([])} className="text-xs text-red-400 hover:text-red-300 ml-2 underline">Clear Status</button>
                     )}
-                    {filterStatus.length > 0 && (
-                        <button onClick={() => setFilterStatus([])} className="text-xs text-red-400 hover:text-red-300 ml-2 underline">Clear Status</button>
-                    )}
+
                 </div>
 
                 {/* Active Filters Display */}
