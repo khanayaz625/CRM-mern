@@ -287,7 +287,7 @@ const LandingPage = () => {
                             </h4>
                             <div className="space-y-2">
                                 <p className="text-sm opacity-60">Email</p>
-                                <p className="font-mono bg-white/5 p-2 rounded">demoadmin@example.com</p>
+                                <p className="font-mono bg-white/5 p-2 rounded">demoadmin@crm.com</p>
                                 <p className="text-sm opacity-60 mt-4">Password</p>
                                 <p className="font-mono bg-white/5 p-2 rounded">demo123</p>
                             </div>
@@ -299,7 +299,7 @@ const LandingPage = () => {
                             </h4>
                             <div className="space-y-2">
                                 <p className="text-sm opacity-60">Email</p>
-                                <p className="font-mono bg-white/5 p-2 rounded">demoemployee@example.com</p>
+                                <p className="font-mono bg-white/5 p-2 rounded">employeeadmin@crm.com</p>
                                 <p className="text-sm opacity-60 mt-4">Password</p>
                                 <p className="font-mono bg-white/5 p-2 rounded">demo123</p>
                             </div>

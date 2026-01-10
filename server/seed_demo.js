@@ -12,10 +12,11 @@ const seedDemoData = async () => {
         console.log('✅ Connected to MongoDB for seeding demo data');
 
         // 1. Create Demo Admin
-        const demoAdminEmail = 'demoadmin@example.com';
+        const demoAdminEmail = 'demoadmin@crm.com';
         let demoAdmin = await User.findOne({ email: demoAdminEmail });
+        const hashedPassword = await bcrypt.hash('demo123', 10);
+
         if (!demoAdmin) {
-            const hashedPassword = await bcrypt.hash('demo123', 10);
             demoAdmin = new User({
                 name: 'Demo Admin',
                 email: demoAdminEmail,
@@ -26,11 +27,13 @@ const seedDemoData = async () => {
             await demoAdmin.save();
             console.log('✅ Demo Admin created');
         } else {
-            console.log('ℹ️ Demo Admin already exists');
+            demoAdmin.password = hashedPassword;
+            await demoAdmin.save();
+            console.log('ℹ️ Demo Admin updated (password reset)');
         }
 
         // 2. Create Demo Employee
-        const demoEmployeeEmail = 'demoemployee@example.com';
+        const demoEmployeeEmail = 'employeeadmin@crm.com';
         let demoEmployee = await User.findOne({ email: demoEmployeeEmail });
         if (!demoEmployee) {
             const hashedPassword = await bcrypt.hash('demo123', 10);
@@ -44,7 +47,9 @@ const seedDemoData = async () => {
             await demoEmployee.save();
             console.log('✅ Demo Employee created');
         } else {
-            console.log('ℹ️ Demo Employee already exists');
+            demoEmployee.password = hashedPassword;
+            await demoEmployee.save();
+            console.log('ℹ️ Demo Employee updated (password reset)');
         }
 
         // 3. Create Demo Leads
