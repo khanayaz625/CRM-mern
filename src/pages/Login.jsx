@@ -3,7 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
-import { Lock, Mail, ChevronRight } from 'lucide-react';
+import { Lock, Mail, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -18,7 +19,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(email, password);
+            await login(email.toLowerCase(), password);
             navigate('/dashboard');
         } catch (err) {
             console.error(err);
@@ -41,6 +42,13 @@ const Login = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="relative z-10 w-full max-w-md p-8 glass rounded-2xl shadow-2xl"
             >
+                <div className="flex justify-between items-center mb-6">
+                    <Link to="/" className="text-primary hover:text-primary/80 transition-colors flex items-center gap-2 text-sm font-medium group">
+                        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                        Back to Home
+                    </Link>
+                </div>
+
                 <h2 className="text-3xl font-bold text-center text-white mb-2">Welcome Back</h2>
                 <p className="text-center text-muted mb-8">Access your CRM Portal</p>
 
