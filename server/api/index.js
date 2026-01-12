@@ -54,6 +54,36 @@ app.get("/setup-admin", async (req, res) => {
     }
 });
 
+/* ---------- Demo Setup Route ---------- */
+app.get("/setup-demo", async (req, res) => {
+    try {
+        // 1. Create Demo Admin
+        const demoAdminEmail = 'demoadmin@crm.com';
+        const hashedPassword = await bcrypt.hash('demo123', 10);
+        let demoAdmin = await User.findOneAndUpdate(
+            { email: demoAdminEmail },
+            { name: 'Demo Admin', password: hashedPassword, role: 'admin', isDemo: true },
+            { upsert: true, new: true }
+        );
+
+        // 2. Create Demo Employee
+        const demoEmployeeEmail = 'employeeadmin@crm.com';
+        let demoEmployee = await User.findOneAndUpdate(
+            { email: demoEmployeeEmail },
+            { name: 'Demo Employee', password: hashedPassword, role: 'employee', isDemo: true },
+            { upsert: true, new: true }
+        );
+
+        res.json({
+            message: '✅ Demo accounts created/reset successfully!',
+            admin: { email: demoAdminEmail, password: 'demo123' },
+            employee: { email: demoEmployeeEmail, password: 'demo123' }
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 /* ---------- API Routes ---------- */
 app.use("/api/auth", authRoutes);
 app.use("/api/leads", leadRoutes);
