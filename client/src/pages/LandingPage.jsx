@@ -79,11 +79,11 @@ const LandingPage = () => {
                     E-Course4u
                 </div>
                 <div className="flex gap-4 items-center">
-                    <div className="hidden md:flex gap-4">
-                        <button onClick={() => navigate('/login')} className="px-5 py-2 glass rounded-full hover:bg-white/10 transition text-sm">
+                    <div className="flex gap-2 md:gap-4">
+                        <button onClick={() => navigate('/login')} className="px-3 md:px-5 py-2 glass rounded-full hover:bg-white/10 transition text-xs md:text-sm">
                             Login
                         </button>
-                        <a href="#demo" className="px-5 py-2 bg-accent/20 text-accent rounded-full border border-accent/30 hover:bg-accent/30 transition text-sm font-medium">
+                        <a href="#demo" className="px-3 md:px-5 py-2 bg-accent/20 text-accent rounded-full border border-accent/30 hover:bg-accent/30 transition text-xs md:text-sm font-medium">
                             Try Demo
                         </a>
                     </div>
