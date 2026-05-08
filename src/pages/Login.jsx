@@ -80,6 +80,27 @@ const Login = () => {
                         <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                 </form>
+
+                {/* Demo Credentials Hint */}
+                <div className="mt-8 pt-6 border-t border-white/10">
+                    <p className="text-xs text-center text-muted mb-4 uppercase tracking-widest">Demo Access</p>
+                    <div className="grid grid-cols-1 gap-3">
+                        <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                            <p className="text-[10px] text-primary font-bold uppercase mb-1">Admin</p>
+                            <div className="flex justify-between items-center text-xs">
+                                <span className="opacity-60">demoadmin@crm.com</span>
+                                <span className="font-mono text-accent">demo123</span>
+                            </div>
+                        </div>
+                        <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                            <p className="text-[10px] text-accent font-bold uppercase mb-1">Employee</p>
+                            <div className="flex justify-between items-center text-xs">
+                                <span className="opacity-60">employeeadmin@crm.com</span>
+                                <span className="font-mono text-primary">demo123</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </motion.div>
         </div>
     );
